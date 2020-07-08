@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Space Game"
-run/main_scene="res://main.tscn"
+run/main_scene="res://World.tscn"
 config/icon="res://icon.png"
 
 [input]
@@ -57,3 +57,4 @@ vram_compression/import_etc2=false
 quality/shadow_atlas/size=16384
 quality/shadows/filter_mode=2
 environment/default_clear_color=Color( 0, 0, 0, 1 )
+quality/filters/msaa=3

@@ -24,7 +24,6 @@ func _connected(proto = ""):
 
 var id = null
 onready var Constructs = get_node("Constructs")
-onready var SelfShip = get_node("Constructs/SelfShip")
 onready var Ship = preload("res://Ship.tscn")
 
 func _on_data():
@@ -32,26 +31,21 @@ func _on_data():
 	if d.has("Init"):
 		id = d.Init
 	if d.has("Change"):
-		
 		if d.Change.has("Unload"):
 			var uid = d.Change.Unload
 			for child in Constructs.get_children():
 				if child.id == uid:
 					Constructs.remove_child(child)
-		
 		if d.Change.has("Load"):
 			var c = d.Change.Load
-			var ship
-			if c.id == id:
-				ship = SelfShip
-			else:
-				ship = Ship.instance()
-				Constructs.add_child(ship)
+			var ship = Ship.instance()
+			Constructs.add_child(ship)
 			ship.id = c.id
 			ship.epoch = c.phys.epoch
 			ship.s = Vector3(c.phys.s.x, c.phys.s.y, c.phys.s.z)
 			ship.p = Vector3(c.phys.p.x, c.phys.p.y, c.phys.p.z)
 			ship.m = c.phys.m
+			ship.get_node("Camera").visible = c.id == id
 
 func _process(delta):
 	_client.poll()
