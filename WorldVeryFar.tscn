@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Spatial
+
+func _ready():
+	var arrays = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	
+	var verts = PoolVector3Array()
+	var colors = PoolColorArray()
+	var s = 1e4
+	
+	verts.resize(s)
+	colors.resize(s)
+	
+	for n in range(s):
+		var x = rand_range(-8000, 8000)
+		var y = rand_range(-8000, 8000)
+		var z = rand_range(-8000, 8000)
+		verts[n] = Vector3(x, y, z)
+		colors[n] = Color(1, 1, 1, 1)
+	
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_COLOR] = colors
+	
+	var mesh = ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_POINTS, arrays)
+	
+	$Stars.mesh = mesh;
+"
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+flags_no_depth_test = true
+flags_use_point_size = true
+vertex_color_use_as_albedo = true
+
+[node name="WorldVeryFar" type="Spatial"]
+script = SubResource( 1 )
+
+[node name="Camera" type="Camera" parent="."]
+near = 0.01
+far = 8192.0
+
+[node name="Stars" type="MeshInstance" parent="."]
+material_override = SubResource( 2 )
