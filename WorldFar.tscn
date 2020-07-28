@@ -1,4 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
+
+[sub_resource type="Environment" id=5]
+glow_enabled = true
+glow_bloom = 0.2
+glow_blend_mode = 0
+glow_bicubic_upscale = true
 
 [sub_resource type="SphereMesh" id=1]
 rings = 64
@@ -6,7 +12,7 @@ rings = 64
 [sub_resource type="SpatialMaterial" id=2]
 params_diffuse_mode = 4
 params_specular_mode = 3
-albedo_color = Color( 0.380392, 0.352941, 0.180392, 1 )
+albedo_color = Color( 0.203922, 0.113725, 0.0627451, 1 )
 metallic_specular = 0.0
 roughness = 0.04
 
@@ -15,14 +21,17 @@ roughness = 0.04
 [sub_resource type="SpatialMaterial" id=4]
 emission_enabled = true
 emission = Color( 1, 1, 1, 1 )
-emission_energy = 1.0
+emission_energy = 3.0
 emission_operator = 0
 emission_on_uv2 = false
 
 [node name="WorldFar" type="Spatial"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 5 )
+
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( -0.840973, 0, 0.541077, 0, 1, 0, -0.541077, 0, -0.840973, 80, 0, 149571 )
+transform = Transform( 0.889073, 0, 0.457765, 0, 1, 0, -0.457765, 0, 0.889073, 121.013, 0, 149665 )
 near = 0.01
 far = 100000.0
 

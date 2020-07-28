@@ -1,13 +1,20 @@
-extends Control
+extends Spatial
 
 export var websocket_url = "ws://10.0.0.225:29979"
 export var client_id = ""
 
 var _client = WebSocketClient.new()
+var _id = null
 
-onready var _World = $ViewportContainer/Viewport/World
+onready var NodeViewport = $CanvasLayer/ViewportContainer/Viewport
+
+func resize():
+	NodeViewport.size = get_tree().get_root().size
 
 func _ready():
+	get_tree().get_root().connect("size_changed", self, "resize")
+	resize()
+	
 	_client.connect("connection_closed", self, "_closed")
 	_client.connect("connection_error", self, "_closed")
 	_client.connect("connection_established", self, "_connected")
@@ -19,8 +26,8 @@ func _ready():
 
 func _process(_delta):
 	_client.poll()
-	if id:
-		var ship = _World.get_ship(id)
+	if _id:
+		var ship = $node.get_ship(_id)
 		$Panel/Label.text = to_json(ship.translation)
 		$Panel/Label2.text = to_json(ship.a)
 		$Panel/Label3.text = to_json(ship.v)
@@ -78,20 +85,19 @@ func _connected(proto = ""):
 
 
 
-var id = null
 
 func _on_data():
 	var data = _client.get_peer(1).get_packet()
 	var dict = parse_json(data.get_string_from_utf8())
 	if dict.has("Init"):
-		id = dict.Init
+		_id = dict.Init
 		
 	if dict.has("Change"):
 		if dict.Change.has("Load"):
 			var details = dict.Change.Load
-			var is_me = details.id == id
+			var is_me = details.id == _id
 
-			var ship = _World.get_ship(details.id)
+			var ship = $node.get_ship(details.id)
 			ship.m = details.phys.m
 			ship.epoch = details.phys.epoch
 			ship.r = dict_to_vec(details.phys.r)
@@ -100,4 +106,4 @@ func _on_data():
 			ship.get_node("Camera").current = is_me
 			
 		if dict.Change.has("Unload"):
-			_World.remove_ship(dict.Change.Unload)
+			$node.remove_ship(dict.Change.Unload)
